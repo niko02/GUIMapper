@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,7 +28,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javax.imageio.ImageIO;
 import org.sikuli.script.Region;
@@ -56,7 +58,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private ComboBox commandField;
     @FXML
-    private ImageView thumbImagen;
+    private ImageView thumbImage;
     @FXML
     private Button btnEdit;
     @FXML
@@ -67,7 +69,7 @@ public class FXMLDocumentController implements Initializable {
     public static String nombObj;
     public static String accion;
     private ObservableList<Captura> items;
-    
+    private final String RUTAIMG = System.getProperty("user.home")+"/Downloads/";
     private ObservableList<Captura> capturaData = FXCollections.observableArrayList();
     
      public ObservableList<Captura> getCapturaData() {
@@ -98,18 +100,27 @@ public class FXMLDocumentController implements Initializable {
         ScreenImage si = screen.capture(region);
         BufferedImage img = si.getImage();
         GuiMapperInit init = new GuiMapperInit();
-        init.showSave();
-        int x = region.x;
-        int y = region.y;
-        Captura captura = new Captura();
-        captura.setAccion(accion);
-        captura.setObjeto(nombObj);
-        captura.setX(x);
-        captura.setY(y);
-        captura.setImagen("xxx");
-        //GuiMapperInit main = new GuiMapperInit();
-        getCapturaData().add(captura);
-        tableObjects.setItems(getCapturaData());
+        if (init.showSave()) {
+            int x = region.x;
+            int y = region.y;
+            Captura captura = new Captura();
+            captura.setAccion(accion);
+            captura.setObjeto(nombObj);
+            captura.setX(x);
+            captura.setY(y);
+            captura.setImagen("xxx");
+            saveImage(RUTAIMG, nombObj, img);
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            Image previewImg = new Image("file:"+RUTAIMG+nombObj+".png");
+            thumbImage.setImage(previewImg);
+            //GuiMapperInit main = new GuiMapperInit();
+            getCapturaData().add(captura);
+            tableObjects.setItems(getCapturaData());
+        } 
     }
     @Override
     public void initialize(URL url, ResourceBundle rb) {  
@@ -132,7 +143,7 @@ public class FXMLDocumentController implements Initializable {
                 cellData -> cellData.getValue().yProperty());
          
         tableObjects.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue)->detallesObjeto(newValue)); 
+                (observable, oldValue, newValue)->objectDetails(newValue)); 
         
         objectField.setDisable(true);
         commandField.setDisable(true);
@@ -140,9 +151,11 @@ public class FXMLDocumentController implements Initializable {
         btnDelete.setDisable(true);
     }
     
-    private void detallesObjeto(Captura captura) {
+    private void objectDetails(Captura captura) {
         if (captura != null) {
             // Fill the labels with info from the person object.
+            Image previewImage = new Image("file:"+RUTAIMG+captura.getObjeto()+".png");
+            thumbImage.setImage(previewImage);
             objectField.setText(captura.getObjeto());
             commandField.setPromptText(captura.getAccion());
             objectField.setDisable(false);
@@ -157,7 +170,7 @@ public class FXMLDocumentController implements Initializable {
         }
     }
     
-    public void guardarImagen(String ruta, String nombre, BufferedImage img){
+    public void saveImage(String ruta, String nombre, BufferedImage img){
         File file = new File(ruta,nombre+".png"); 
         try {
             boolean i = ImageIO.write(img, "png", file); 
