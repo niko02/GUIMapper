@@ -53,8 +53,8 @@
                   </Group>
                   <HBox layoutX="201.0" layoutY="324.0" prefHeight="25.0" prefWidth="120.0" spacing="10.0" AnchorPane.leftAnchor="201.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="324.0">
                      <children>
-                        <Button fx:id="btnEdit" layoutX="220.0" layoutY="325.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="51.0" text="Edit" />
-                        <Button fx:id="btnDelete" layoutX="269.0" layoutY="325.0" mnemonicParsing="false" text="Delete" />
+                        <Button fx:id="btnEdit" layoutX="220.0" layoutY="325.0" mnemonicParsing="false" onAction="#handleEdit" prefHeight="25.0" prefWidth="51.0" text="Edit" />
+                        <Button fx:id="btnDelete" layoutX="269.0" layoutY="325.0" mnemonicParsing="false" onAction="#handleDelete" text="Delete" />
                      </children>
                   </HBox>
                </children>
