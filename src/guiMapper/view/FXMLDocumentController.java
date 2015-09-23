@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.Optional;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -29,9 +30,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javax.imageio.ImageIO;
+import javafx.scene.control.ButtonType;
 import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
 import org.sikuli.script.ScreenImage;
+
 /**
  *
  * @author UserQV
@@ -50,7 +53,7 @@ public class FXMLDocumentController implements Initializable {
     private TableColumn<Captura, Number> XColumn;
     @FXML
     private TableColumn<Captura, Number> YColumn;
-    
+
     @FXML
     private TextField objectField;
     @FXML
@@ -62,18 +65,17 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Button btnDelete;
 
-    
     private GuiMapperInit mainApp;
     public static String nombObj;
     public static String accion;
     private ObservableList<Captura> items;
-    
+
     private ObservableList<Captura> capturaData = FXCollections.observableArrayList();
-    
-     public ObservableList<Captura> getCapturaData() {
+
+    public ObservableList<Captura> getCapturaData() {
         return capturaData;
     }
-    
+
     /**
      * Is called by the main application to give a reference back to itself.
      *
@@ -85,14 +87,42 @@ public class FXMLDocumentController implements Initializable {
         // Add observable list data to the table
         //tablaObjetos.setItems(mainApp.getCapturaData());
     }
-    
+
     @FXML
     private void handleCapture(ActionEvent event) {
         grabar();
         //guardar();
     }
 
-    public void grabar(){
+    @FXML
+    private void handleEdit(ActionEvent event) {
+
+        Captura selectedCaptura = tableObjects.getSelectionModel().getSelectedItem();
+
+        selectedCaptura.setObjeto(objectField.getText());
+        selectedCaptura.setAccion(commandField.getValue().toString());
+    }
+
+    @FXML
+    private void handleDelete(ActionEvent event) {
+
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Delete capture");
+        alert.setHeaderText("Delete capture selected");
+        alert.setContentText("Are you sure to delete this capture?");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            // ... user chose OK
+            int selectedIndex = tableObjects.getSelectionModel().getSelectedIndex();
+            tableObjects.getItems().remove(selectedIndex);
+            disableItems(true);
+        } else {
+            // ... user chose CANCEL or closed the dialog
+        }
+    }
+
+    public void grabar() {
         Screen screen = new Screen();
         Region region = screen.selectRegion("Select a picture");
         ScreenImage si = screen.capture(region);
@@ -111,56 +141,51 @@ public class FXMLDocumentController implements Initializable {
         getCapturaData().add(captura);
         tableObjects.setItems(getCapturaData());
     }
+
     @Override
-    public void initialize(URL url, ResourceBundle rb) {  
+    public void initialize(URL url, ResourceBundle rb) {
 
         this.commandField.setItems(GuiMapperInit.options);
-        
-         ObjectColumn.setCellValueFactory(
+
+        ObjectColumn.setCellValueFactory(
                 cellData -> cellData.getValue().objetoProperty());
-         
-         commandColumn.setCellValueFactory(
+
+        commandColumn.setCellValueFactory(
                 cellData -> cellData.getValue().accionProperty());
-         
-         ImageColumn.setCellValueFactory(
+
+        ImageColumn.setCellValueFactory(
                 cellData -> cellData.getValue().imagenProperty());
-         
-         XColumn.setCellValueFactory(
-                 cellData -> cellData.getValue().xProperty());
-         
-         YColumn.setCellValueFactory(
+
+        XColumn.setCellValueFactory(
+                cellData -> cellData.getValue().xProperty());
+
+        YColumn.setCellValueFactory(
                 cellData -> cellData.getValue().yProperty());
-         
+
         tableObjects.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue)->detallesObjeto(newValue)); 
-        
-        objectField.setDisable(true);
-        commandField.setDisable(true);
-        btnEdit.setDisable(true);
-        btnDelete.setDisable(true);
+                (observable, oldValue, newValue) -> detallesObjeto(newValue));
+
+        disableItems(true);
     }
-    
+
     private void detallesObjeto(Captura captura) {
         if (captura != null) {
             // Fill the labels with info from the person object.
             objectField.setText(captura.getObjeto());
             commandField.setPromptText(captura.getAccion());
-            objectField.setDisable(false);
-            commandField.setDisable(false);
-            btnEdit.setDisable(false);
-            btnDelete.setDisable(false);
-            
+            disableItems(false);
+
         } else {
             // Person is null, remove all the text.
             objectField.setText("");
             commandField.setPromptText("");
         }
     }
-    
-    public void guardarImagen(String ruta, String nombre, BufferedImage img){
-        File file = new File(ruta,nombre+".png"); 
+
+    public void guardarImagen(String ruta, String nombre, BufferedImage img) {
+        File file = new File(ruta, nombre + ".png");
         try {
-            boolean i = ImageIO.write(img, "png", file); 
+            boolean i = ImageIO.write(img, "png", file);
             if (i) {
                 System.out.println("true");
             }
@@ -171,7 +196,14 @@ public class FXMLDocumentController implements Initializable {
             alert.setContentText(ex.getMessage());
             alert.showAndWait();
         }
-        
+
+    }
+
+    public void disableItems(boolean option) {
+        objectField.setDisable(option);
+        commandField.setDisable(option);
+        btnEdit.setDisable(option);
+        btnDelete.setDisable(option);
     }
 
 }
