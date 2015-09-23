@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="517.0" prefWidth="523.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="guiMapper.view.FXMLDocumentController">
+   <children>
+      <SplitPane dividerPositions="0.2753623188405797" layoutX="6.0" orientation="VERTICAL" prefHeight="416.0" prefWidth="539.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="109.0" prefWidth="488.0">
+               <children>
+                  <HBox layoutX="6.0" layoutY="43.0" spacing="10.0">
+                     <children>
+                        <Button layoutX="14.0" layoutY="43.0" mnemonicParsing="false" text="Open" />
+                        <Button layoutX="77.0" layoutY="43.0" mnemonicParsing="false" text="Save" />
+                        <Button layoutX="142.0" layoutY="43.0" mnemonicParsing="false" text="Save as" />
+                     </children>
+                  </HBox>
+                  <Button layoutX="195.0" layoutY="20.0" mnemonicParsing="false" onAction="#handleCapture" prefHeight="72.0" prefWidth="98.0" text="Shoot" />
+                  <ImageView fitHeight="111.0" fitWidth="183.0" layoutX="305.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fitHeight="111.0" fitWidth="104.0" layoutX="384.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="370.0" prefWidth="521.0">
+               <children>
+                  <TableView id="tabla" fx:id="tableObjects" layoutX="28.0" layoutY="34.0" prefHeight="200.0" prefWidth="466.0" AnchorPane.leftAnchor="28.0" AnchorPane.rightAnchor="27.0" AnchorPane.topAnchor="34.0">
+                    <columns>
+                      <TableColumn fx:id="ObjectColumn" prefWidth="75.0" text="Object" />
+                      <TableColumn fx:id="commandColumn" prefWidth="75.0" text="Command" />
+                        <TableColumn fx:id="XColumn" prefWidth="75.0" text="X" />
+                        <TableColumn fx:id="YColumn" prefWidth="75.0" text="Y" />
+                        <TableColumn fx:id="ImageColumn" prefWidth="75.0" text="Image" />
+                    </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+                  <Group layoutX="96.0" layoutY="-1.0" AnchorPane.leftAnchor="146.0" AnchorPane.topAnchor="253.0">
+                     <children>
+                        <Label layoutX="51.0" layoutY="287.0" text="Command" />
+                        <Label layoutX="50.0" layoutY="254.0" text="Object" />
+                     </children>
+                  </Group>
+                  <Group layoutX="88.0" layoutY="-6.0" AnchorPane.leftAnchor="246.0" AnchorPane.topAnchor="247.0">
+                     <children>
+                        <ComboBox fx:id="commandField" layoutX="158.0" layoutY="289.0" prefWidth="150.0" />
+                        <TextField fx:id="objectField" layoutX="158.0" layoutY="253.0" />
+                     </children>
+                  </Group>
+                  <HBox layoutX="201.0" layoutY="324.0" prefHeight="25.0" prefWidth="120.0" spacing="10.0" AnchorPane.leftAnchor="201.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="324.0">
+                     <children>
+                        <Button fx:id="btnEdit" layoutX="220.0" layoutY="325.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="51.0" text="Edit" />
+                        <Button fx:id="btnDelete" layoutX="269.0" layoutY="325.0" mnemonicParsing="false" text="Delete" />
+                     </children>
+                  </HBox>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
