@@ -12,8 +12,8 @@
          <children>
             <Group layoutX="-24.0" layoutY="4.0">
                <children>
-                  <Label layoutX="89.0" layoutY="80.0" text="Accion" />
-                  <Label layoutX="89.0" layoutY="40.0" text="Nombre" />
+                  <Label layoutX="89.0" layoutY="80.0" text="Command" />
+                  <Label layoutX="89.0" layoutY="40.0" text="Name" />
                </children>
             </Group>
             <Group layoutX="-24.0" layoutY="4.0">
@@ -22,7 +22,7 @@
                   <ComboBox fx:id="commandField" layoutX="163.0" layoutY="76.0" prefWidth="150.0" />
                </children>
             </Group>
-            <Button layoutX="151.0" layoutY="140.0" mnemonicParsing="false" onAction="#handlerSave" text="Guardar" />
+            <Button layoutX="151.0" layoutY="140.0" mnemonicParsing="false" onAction="#handlerSave" text="Save" />
          </children>
       </Pane>
    </children>
