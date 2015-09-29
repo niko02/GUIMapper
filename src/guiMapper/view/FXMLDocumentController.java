@@ -7,6 +7,7 @@ package guiMapper.view;
 
 import guiMapper.GuiMapperInit;
 import guiMapper.model.Captura;
+import guiMapper.model.CaptureListWrapper;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -35,6 +37,12 @@ import javafx.scene.control.ButtonType;
 import org.sikuli.script.Region;
 import org.sikuli.script.Screen;
 import org.sikuli.script.ScreenImage;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 
 /**
  *
@@ -71,7 +79,8 @@ public class FXMLDocumentController implements Initializable {
     public static String accion;
     private ObservableList<Captura> items;
     private final String RUTAIMG = System.getProperty("user.home")+"/Downloads/";
-    private ObservableList<Captura> capturaData = FXCollections.observableArrayList();
+    public static ObservableList<Captura> capturaData = FXCollections.observableArrayList();
+    
 
     public ObservableList<Captura> getCapturaData() {
         return capturaData;
@@ -122,7 +131,67 @@ public class FXMLDocumentController implements Initializable {
             // ... user chose CANCEL or closed the dialog
         }
     }
+    
+    @FXML
+    private void handleNew() {
+//        mainApp.getCapturaData().clear();
+//        mainApp.setCaptureFilePath(null);
+        
+        capturaData.clear();
+        mainApp.setCaptureFilePath(null);
+    }
+    
+    @FXML
+    private void handleOpen() {
+        FileChooser fileChooser = new FileChooser();
 
+        // Set extension filter
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
+                "XML files (*.xml)", "*.xml");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        // Show save file dialog
+        File file = fileChooser.showOpenDialog(mainApp.getPrimaryStage());
+
+        if (file != null) {
+            mainApp.loadPersonDataFromFile(file);
+        }
+    }
+    
+    @FXML
+    private void handleSave() {
+        File personFile = mainApp.getPersonFilePath();
+        if (personFile != null) {
+            mainApp.saveCaptureDataToFile(personFile);
+        } else {
+            handleSaveAs();
+        }
+    }
+    
+    /**
+     * Opens a FileChooser to let the user select a file to save to.
+     */
+    @FXML
+    private void handleSaveAs() {
+        FileChooser fileChooser = new FileChooser();
+
+        // Set extension filter
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
+                "XML files (*.xml)", "*.xml");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        // Show save file dialog
+        File file = fileChooser.showSaveDialog(mainApp.getPrimaryStage());
+
+        if (file != null) {
+            // Make sure it has the correct extension
+            if (!file.getPath().endsWith(".xml")) {
+                file = new File(file.getPath() + ".xml");
+            }
+            mainApp.saveCaptureDataToFile(file);
+        }
+    }
+  
     public void grabar() {
         Screen screen = new Screen();
         Region region = screen.selectRegion("Select a picture");
