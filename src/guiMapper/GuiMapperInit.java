@@ -147,7 +147,7 @@ public class GuiMapperInit extends Application {
             prefs.remove("filePath");
 
             // Update the stage title.
-            primaryStage.setTitle("AddressApp");
+            primaryStage.setTitle("GUIMapper");
         }
     }
 

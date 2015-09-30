@@ -240,7 +240,7 @@ public class FXMLDocumentController implements Initializable {
             captura.setImagen("xxx");
             saveImage(RUTAIMG, nombObj, img);
             try {
-                Thread.sleep(3000);
+                Thread.sleep(1000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
             }
