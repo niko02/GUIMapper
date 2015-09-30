@@ -24,6 +24,7 @@ public class Captura {
     private StringProperty Objeto;
     private StringProperty Accion;
     private StringProperty Imagen;
+    private StringProperty ImagenId;
     private IntegerProperty x;
     private IntegerProperty y;
 
@@ -31,13 +32,14 @@ public class Captura {
      * Default constructor.
      */
     public Captura() {
-        this(null,null,null,0,0);
+        this(null,null,null,null,0,0);
     }
 
-    public Captura(String objeto, String accion, String imagen, int x, int y) {
+    public Captura(String objeto, String accion, String imagen,String imagenId, int x, int y) {
         this.Objeto = new SimpleStringProperty(objeto);
         this.Accion = new SimpleStringProperty(accion);
         this.Imagen = new SimpleStringProperty(imagen);
+        this.ImagenId = new SimpleStringProperty(imagenId);
         this.x = new SimpleIntegerProperty(x);
         this.y = new SimpleIntegerProperty(y);
     }
@@ -52,6 +54,10 @@ public class Captura {
 
     public StringProperty imagenProperty() {
         return Imagen;
+    }
+    
+    public StringProperty imagenIdProperty() {
+        return ImagenId;
     }
 
     public IntegerProperty xProperty() {
@@ -102,6 +108,20 @@ public class Captura {
      */
     public void setImagen(String Imagen) {
         this.Imagen.set(Imagen);
+    }
+    
+    /**
+     * @return the ImagenId
+     */
+    public String getImagenId() {
+        return ImagenId.get();
+    }
+
+    /**
+     * @param ImagenId the Imagen to set
+     */
+    public void setImagenId(String ImagenId) {
+        this.ImagenId.set(ImagenId);
     }
 
     /**
