@@ -68,19 +68,6 @@ public class GuiMapperInit extends Application {
 
     public void initGUI() {
         try {
-//            FXMLLoader loader = new FXMLLoader();
-//            Parent root;
-//            root = loader.load(getClass().getResource("view/FXMLDocument.fxml"));
-//
-//            Scene scene = new Scene(root);
-//
-//            primaryStage.setScene(scene);
-//
-//            FXMLDocumentController controller = loader.getController();
-//            controller.setGuiMapperInit(this);
-//
-//            primaryStage.show();
-
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(GuiMapperInit.class
                     .getResource("view/FXMLDocument.fxml"));
@@ -139,7 +126,7 @@ public class GuiMapperInit extends Application {
         return false;
     }
 
-    public File getPersonFilePath() {
+    public File getCaptureFilePath() {
         Preferences prefs = Preferences.userNodeForPackage(GuiMapperInit.class);
         String filePath = prefs.get("filePath", null);
         if (filePath != null) {

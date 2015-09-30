@@ -78,14 +78,38 @@ public class FXMLDocumentController implements Initializable {
     public static String nombObj;
     public static String accion;
     private ObservableList<Captura> items;
-    private final String RUTAIMG = System.getProperty("user.home")+"/Downloads/";
+    private final String RUTAIMG = System.getProperty("user.home") + "/Downloads/";
     public static ObservableList<Captura> capturaData = FXCollections.observableArrayList();
-    
 
     public ObservableList<Captura> getCapturaData() {
         return capturaData;
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+
+        this.commandField.setItems(GuiMapperInit.options);
+
+        ObjectColumn.setCellValueFactory(
+                cellData -> cellData.getValue().objetoProperty());
+
+        commandColumn.setCellValueFactory(
+                cellData -> cellData.getValue().accionProperty());
+
+        ImageColumn.setCellValueFactory(
+                cellData -> cellData.getValue().imagenProperty());
+
+        XColumn.setCellValueFactory(
+                cellData -> cellData.getValue().xProperty());
+
+        YColumn.setCellValueFactory(
+                cellData -> cellData.getValue().yProperty());
+
+        tableObjects.getSelectionModel().selectedItemProperty().addListener(
+                (observable, oldValue, newValue) -> objectDetails(newValue));
+            disableItems(true);
+    }
+    
     /**
      * Is called by the main application to give a reference back to itself.
      *
@@ -116,31 +140,37 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void handleDelete(ActionEvent event) {
 
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Delete capture");
-        alert.setHeaderText("Delete capture selected");
-        alert.setContentText("Are you sure to delete this capture?");
+        int selectedIndex = tableObjects.getSelectionModel().getSelectedIndex();
+        if (selectedIndex >= 0) {
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Delete capture");
+            alert.setHeaderText("Delete capture selected");
+            alert.setContentText("Are you sure to delete this capture?");
 
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            // ... user chose OK
-            int selectedIndex = tableObjects.getSelectionModel().getSelectedIndex();
-            tableObjects.getItems().remove(selectedIndex);
-            disableItems(true);
-        } else {
-            // ... user chose CANCEL or closed the dialog
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK) {
+                // ... user chose OK
+                tableObjects.getItems().remove(selectedIndex);
+                if(capturaData.isEmpty()){
+                    disableItems(true);
+                }
+               //disableItems(true);
+            } else {
+                // ... user chose CANCEL or closed the dialog
+            }
         }
     }
-    
+
     @FXML
     private void handleNew() {
 //        mainApp.getCapturaData().clear();
 //        mainApp.setCaptureFilePath(null);
-        
+
         capturaData.clear();
         mainApp.setCaptureFilePath(null);
+        thumbImage.setImage(null);
     }
-    
+
     @FXML
     private void handleOpen() {
         FileChooser fileChooser = new FileChooser();
@@ -157,17 +187,17 @@ public class FXMLDocumentController implements Initializable {
             mainApp.loadPersonDataFromFile(file);
         }
     }
-    
+
     @FXML
     private void handleSave() {
-        File personFile = mainApp.getPersonFilePath();
-        if (personFile != null) {
-            mainApp.saveCaptureDataToFile(personFile);
+        File captureFile = mainApp.getCaptureFilePath();
+        if (captureFile != null) {
+            mainApp.saveCaptureDataToFile(captureFile);
         } else {
             handleSaveAs();
         }
     }
-    
+
     /**
      * Opens a FileChooser to let the user select a file to save to.
      */
@@ -191,7 +221,7 @@ public class FXMLDocumentController implements Initializable {
             mainApp.saveCaptureDataToFile(file);
         }
     }
-  
+
     public void grabar() {
         Screen screen = new Screen();
         Region region = screen.selectRegion("Select a picture");
@@ -213,47 +243,18 @@ public class FXMLDocumentController implements Initializable {
             } catch (InterruptedException ex) {
                 Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            Image previewImg = new Image("file:"+RUTAIMG+nombObj+".png");
+            Image previewImg = new Image("file:" + RUTAIMG + nombObj + ".png");
             thumbImage.setImage(previewImg);
             //GuiMapperInit main = new GuiMapperInit();
             getCapturaData().add(captura);
             tableObjects.setItems(getCapturaData());
-        } 
+        }
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-
-        this.commandField.setItems(GuiMapperInit.options);
-
-        ObjectColumn.setCellValueFactory(
-                cellData -> cellData.getValue().objetoProperty());
-
-        commandColumn.setCellValueFactory(
-                cellData -> cellData.getValue().accionProperty());
-
-        ImageColumn.setCellValueFactory(
-                cellData -> cellData.getValue().imagenProperty());
-
-        XColumn.setCellValueFactory(
-                cellData -> cellData.getValue().xProperty());
-
-        YColumn.setCellValueFactory(
-                cellData -> cellData.getValue().yProperty());
-
-        tableObjects.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue)->objectDetails(newValue)); 
-        
-        objectField.setDisable(true);
-        commandField.setDisable(true);
-        btnEdit.setDisable(true);
-        btnDelete.setDisable(true);
-    }
-    
     private void objectDetails(Captura captura) {
         if (captura != null) {
             // Fill the labels with info from the person object.
-            Image previewImage = new Image("file:"+RUTAIMG+captura.getObjeto()+".png");
+            Image previewImage = new Image("file:" + RUTAIMG + captura.getObjeto() + ".png");
             thumbImage.setImage(previewImage);
             objectField.setText(captura.getObjeto());
             commandField.setPromptText(captura.getAccion());
@@ -265,9 +266,9 @@ public class FXMLDocumentController implements Initializable {
             commandField.setPromptText("");
         }
     }
-    
-    public void saveImage(String ruta, String nombre, BufferedImage img){
-        File file = new File(ruta,nombre+".png"); 
+
+    public void saveImage(String ruta, String nombre, BufferedImage img) {
+        File file = new File(ruta, nombre + ".png");
         try {
             boolean i = ImageIO.write(img, "png", file);
             if (i) {
