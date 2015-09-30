@@ -107,9 +107,9 @@ public class FXMLDocumentController implements Initializable {
 
         tableObjects.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> objectDetails(newValue));
-            disableItems(true);
+        disableItems(true);
     }
-    
+
     /**
      * Is called by the main application to give a reference back to itself.
      *
@@ -124,8 +124,8 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void handleCapture(ActionEvent event) {
+        mainApp.getPrimaryStage().hide();
         grabar();
-        //guardar();
     }
 
     @FXML
@@ -151,11 +151,11 @@ public class FXMLDocumentController implements Initializable {
             if (result.get() == ButtonType.OK) {
                 // ... user chose OK
                 tableObjects.getItems().remove(selectedIndex);
-                if(capturaData.isEmpty()){
+                if (capturaData.isEmpty()) {
                     disableItems(true);
                     thumbImage.setImage(null);
                 }
-               //disableItems(true);
+                //disableItems(true);
             } else {
                 // ... user chose CANCEL or closed the dialog
             }
@@ -226,29 +226,34 @@ public class FXMLDocumentController implements Initializable {
     public void grabar() {
         Screen screen = new Screen();
         Region region = screen.selectRegion("Select a picture");
-        ScreenImage si = screen.capture(region);
-        BufferedImage img = si.getImage();
-        GuiMapperInit init = new GuiMapperInit();
-        if (init.showSave()) {
-            int x = region.x;
-            int y = region.y;
-            Captura captura = new Captura();
-            captura.setAccion(accion);
-            captura.setObjeto(nombObj);
-            captura.setX(x);
-            captura.setY(y);
-            captura.setImagen("xxx");
-            saveImage(RUTAIMG, nombObj, img);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+        if (region != null) {
+            ScreenImage si = screen.capture(region);
+            BufferedImage img = si.getImage();
+            mainApp.getPrimaryStage().show();
+            GuiMapperInit init = new GuiMapperInit();
+            if (init.showSave()) {
+                int x = region.x;
+                int y = region.y;
+                Captura captura = new Captura();
+                captura.setAccion(accion);
+                captura.setObjeto(nombObj);
+                captura.setX(x);
+                captura.setY(y);
+                captura.setImagen("xxx");
+                saveImage(RUTAIMG, nombObj, img);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                Image previewImg = new Image("file:" + RUTAIMG + nombObj + ".png");
+                thumbImage.setImage(previewImg);
+                //GuiMapperInit main = new GuiMapperInit();
+                getCapturaData().add(captura);
+                tableObjects.setItems(getCapturaData());
             }
-            Image previewImg = new Image("file:" + RUTAIMG + nombObj + ".png");
-            thumbImage.setImage(previewImg);
-            //GuiMapperInit main = new GuiMapperInit();
-            getCapturaData().add(captura);
-            tableObjects.setItems(getCapturaData());
+        } else {
+            mainApp.getPrimaryStage().show();
         }
     }
 
