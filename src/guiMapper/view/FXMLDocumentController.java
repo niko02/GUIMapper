@@ -126,6 +126,11 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private void handleCapture(ActionEvent event) {
         mainApp.getPrimaryStage().hide();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            System.out.println(ex.getMessage());
+        }
         grabar();
     }
 
