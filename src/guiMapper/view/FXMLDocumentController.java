@@ -43,6 +43,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+import java.util.UUID;
 
 /**
  *
@@ -239,14 +240,17 @@ public class FXMLDocumentController implements Initializable {
                 captura.setObjeto(nombObj);
                 captura.setX(x);
                 captura.setY(y);
-                captura.setImagen("xxx");
-                saveImage(RUTAIMG, nombObj, img);
+                UUID imageID = UUID.randomUUID();
+                captura.setImagenId(imageID.toString());
+                
+                captura.setImagen(nombObj + "_"+ imageID.toString() + ".png");
+                saveImage(RUTAIMG, nombObj + "_" + imageID.toString(), img);
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                Image previewImg = new Image("file:" + RUTAIMG + nombObj + ".png");
+                Image previewImg = new Image("file:" + RUTAIMG + nombObj + "_" + imageID.toString() + ".png");
                 thumbImage.setImage(previewImg);
                 //GuiMapperInit main = new GuiMapperInit();
                 getCapturaData().add(captura);
@@ -260,7 +264,7 @@ public class FXMLDocumentController implements Initializable {
     private void objectDetails(Captura captura) {
         if (captura != null) {
             // Fill the labels with info from the person object.
-            Image previewImage = new Image("file:" + RUTAIMG + captura.getObjeto() + ".png");
+            Image previewImage = new Image("file:" + RUTAIMG + captura.getObjeto() + "_" + captura.getImagenId() + ".png");
             thumbImage.setImage(previewImage);
             objectField.setText(captura.getObjeto());
             commandField.setPromptText(captura.getAccion());
