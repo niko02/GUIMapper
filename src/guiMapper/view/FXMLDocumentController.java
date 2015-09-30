@@ -153,6 +153,7 @@ public class FXMLDocumentController implements Initializable {
                 tableObjects.getItems().remove(selectedIndex);
                 if(capturaData.isEmpty()){
                     disableItems(true);
+                    thumbImage.setImage(null);
                 }
                //disableItems(true);
             } else {
